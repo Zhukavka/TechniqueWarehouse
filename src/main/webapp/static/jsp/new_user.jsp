@@ -23,8 +23,7 @@
       } else {
     %>
     <h3>We are not admin</h3>
-    <%}
-    %>
+    <%}%>
     <form id="new_user" method="post">
       <p><input maxlength="32" placeholder="Имя пользователя" type="text" name="user"><input type="submit" value="Добавить"></p>
     </form>

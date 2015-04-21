@@ -1,5 +1,8 @@
 package com.dashyl.servlet;
 
+import com.dashyl.DAO.UserDAO;
+import com.dashyl.entity.User;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,6 +22,9 @@ public class NewUserServlet extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+        String user = req.getParameter("user");
+        UserDAO userService = new UserDAO();
+        userService.save(new User(user));
+        resp.sendRedirect("");
     }
 }

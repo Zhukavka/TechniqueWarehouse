@@ -11,7 +11,7 @@ import java.util.List;
  * Created by Darya on 05.04.2015.
  */
 public class OrderedProductDAO {
-    private EntityManager em = Persistence.createEntityManagerFactory("DBUnitEx").createEntityManager();
+    private EntityManager em = Persistence.createEntityManagerFactory("TechniqueWarehouse").createEntityManager();
 
     public void save(OrderedProduct product){
         em.getTransaction().begin();

@@ -1,5 +1,8 @@
 package com.dashyl.servlet;
 
+import com.dashyl.DAO.UserDAO;
+import com.dashyl.entity.User;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,15 +21,6 @@ import java.util.List;
 @WebServlet("/auth")
 public class AuthServlet extends HttpServlet {
 
-    //бпелеммн
-    static List<String> users = new ArrayList<String>();
-    static {
-        users.add("darya");
-        users.add("vadim");
-        users.add("petr");
-        users.add("admin");
-    }
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("static/jsp/auth.jsp").forward(req, resp);
@@ -38,8 +32,10 @@ public class AuthServlet extends HttpServlet {
         String key = req.getParameter("key");
         String user = req.getParameter("user");
         if(key.equals("123")) {
-            for(String obj: users){
-                if(user.equals(obj)) {
+            UserDAO userService = new UserDAO();
+            List<User> users = userService.getAll();
+            for(User obj: users){
+                if(user.equals(obj.getName())) {
                     Cookie loginCookie = new Cookie("user", user);
                     //setting cookie to expiry in 12 hours
                     loginCookie.setMaxAge(60 * 60 * 12);
