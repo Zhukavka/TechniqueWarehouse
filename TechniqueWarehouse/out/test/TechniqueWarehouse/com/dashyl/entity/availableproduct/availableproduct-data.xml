@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dataset>
-    <person id="1" amount="32" price="28.5" product_id="3"/>
-    <person id="2" amount="16" price="45.5" product_id="4"/>
-</dataset>
