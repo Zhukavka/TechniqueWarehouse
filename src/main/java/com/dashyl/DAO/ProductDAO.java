@@ -30,6 +30,10 @@ public class ProductDAO {
         return em.find(Product.class, id);
     }
 
+    public Product getByBarcode(String barcode) {
+        return em.createNamedQuery("Product.getByBarcode", Product.class).setParameter("barcode", barcode).getSingleResult();
+    }
+
     public void update(Product product) {
         em.getTransaction().begin();
         em.merge(product);

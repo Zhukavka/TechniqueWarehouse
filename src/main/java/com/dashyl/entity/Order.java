@@ -12,13 +12,13 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 @NamedQuery(name = "Order.getAll", query = "select p from Order p")
 public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	@Column(name = "date", updatable = false, insertable = false, columnDefinition = "Date default CURRENT_DATE")
+	@Column(name = "date", updatable = false, insertable = false)
 	@Generated(value = GenerationTime.INSERT)
 	@Temporal(TemporalType.DATE)
 	private Date date;

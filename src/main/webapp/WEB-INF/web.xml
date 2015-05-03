@@ -3,12 +3,12 @@
          xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
-    <!--<filter>
-        <filter-name>filter</filter-name>
-        <filter-class>com.dashyl.ResourcesFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>filter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>-->
+    <servlet>
+        <servlet-name>MainServlet</servlet-name>
+        <servlet-class>com.dashyl.servlet.MainServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MainServlet</servlet-name>
+        <url-pattern>/warehouse</url-pattern>
+    </servlet-mapping>
 </web-app>

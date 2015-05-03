@@ -1,3 +1,8 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="com.dashyl.entity.AvailableProduct"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.dashyl.entity.Product"%>
+<%@ page import="com.dashyl.entity.Category"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -10,8 +15,8 @@
 <div id="bgc">
     <div class="wrapper">
         <%@include file="menu.jsp"%>
-        <h2><b>Товары в наличии на складе &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</b>
-            &nbsp; &nbsp; &nbsp;</h2>
+
+        <h2><b>Товары в наличии на складе </b></h2>
         <table align="left" border="1" cellpadding="1" cellspacing="1" id="products" style="width: 500px;">
             <thead>
             <tr>
@@ -21,15 +26,20 @@
                 <th scope="col">Количество</th>
                 <th scope="col">Цена</th>
             </tr>
+            <c:if test="${not empty products}">
+
+            </c:if>
             </thead>
             <tbody>
             </tbody>
         </table>
-        <p>&nbsp;</p>
         <hr>
-        <p>Сортировать по: &nbsp; &nbsp; &nbsp;<select size="1"><option value="Наименованию">Наименованию</option><option value="Цене">Цене</option></select>&nbsp; &nbsp; &nbsp;&nbsp;<input type="button" value="ОК"></p>
+        <p>Сортировать по:<select size="1"><option value="Наименованию">Наименованию</option><option value="Цене">Цене</option></select>
+            <input type="button" value="ОК"></p>
         <hr>
-        <p>Поиск по: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<select size="1"><option value="Наименованию">Наименованию</option><option value="Штрих-коду">Штрих-коду</option></select>&nbsp; &nbsp; &nbsp; <input placeholder="Введите" type="text">&nbsp; &nbsp;<input type="button" value="ОК"></p>
+        <p>Поиск по:<select size="1"><option value="Наименованию">Наименованию</option><option value="Штрих-коду">Штрих-коду</option></select>
+            <input placeholder="Введите" type="text">
+            <input type="button" value="ОК"></p>
     </div>
 </div>
 </body>

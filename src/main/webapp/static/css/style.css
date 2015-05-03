@@ -4,7 +4,7 @@
 html { height: 100%; }
 
 body {
-    background:  black url(../images/bg.jpg) 0 0 repeat;
+    background:  black url(static/images/bg.jpg) 0 0 repeat;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
     color: #ccc;
@@ -31,7 +31,7 @@ a:hover {
 }
 
 #bgc {
-    background: url(../images/bgc.jpg) no-repeat fixed top center;
+    background: url(static/images/bgc.jpg) no-repeat fixed top center;
     min-height: 100%;
 }
 
@@ -71,9 +71,9 @@ a:hover {
 }
 
 #menu ul li a:hover {
-    background: url(../images/m.png) 0 0 repeat;
+    background: url(static/images/m.png) 0 0 repeat;
 }
 
 #menu ul li a.active {
-    background: url(../images/m2.png) 0 0 repeat;
+    background: url(static/images/m2.png) 0 0 repeat;
 }

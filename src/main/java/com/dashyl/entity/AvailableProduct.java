@@ -14,7 +14,8 @@ public class AvailableProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @OneToOne @MapsId
+    @ManyToOne
+    @JoinColumn(name = "product_id")
     private Product product;
     @Column(name = "amount", nullable = false)
     private int amount;

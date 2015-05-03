@@ -1,6 +1,12 @@
 package com.dashyl.entity;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created by Darya on 05.04.2015.
@@ -8,12 +14,16 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "product")
-@NamedQuery(name = "Product.getAll", query = "select p from Product p")
+@NamedQueries({
+		@NamedQuery(name = "Product.getAll", query = "select p from Product p"),
+		@NamedQuery(name = "Product.getByBarcode", query = "select p from Product p where p.barcode = :barcode")
+})
+
 public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	@Column(name = "barcode", length = 45)
+	@Column(name = "barcode", length = 45, unique = true)
 	private String barcode;
 	@Column(name = "product_name", length = 45)
 	private String name;

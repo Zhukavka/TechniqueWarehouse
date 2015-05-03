@@ -1,25 +1,203 @@
 package com.dashyl.servlet;
 
+import com.dashyl.DAO.UserDAO;
+import com.dashyl.command.AddProductsCommand;
+import com.dashyl.entity.AvailableProduct;
+import com.dashyl.entity.User;
+import com.dashyl.util.DAOUtil;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.*;
+import java.io.*;
+import java.util.List;
 
 /**
  * Created by Darya on 17.04.2015.
 **/
- @WebServlet("/")
+
+
+@MultipartConfig(location = "H:\\")//это потом в конфиг вынести
 public class MainServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
+
+    public MainServlet() {
+        super();
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+    public void init() throws ServletException {
+        super.init();
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+    }
+
+    /*@Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+    }*/
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        processGetRequest(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        processPostRequest(req, resp);
+    }
+
+    protected void processGetRequest(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        String username = null;
+        Cookie[] cookies = req.getCookies();
+        if(cookies != null){
+            for(Cookie cookie : cookies){
+                if(cookie.getName().equals("user")) username = cookie.getValue();
+            }
+        }
+        req.setAttribute("username", username);
+        String event = req.getParameter("event");
+        if(event == null) {
+            req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
+        } else if(event.equals("auth")) {
+            String message = req.getParameter("message");
+            if(message != null) {
+                req.setAttribute("message", processError(message));
+            }
+            req.getRequestDispatcher("static/jsp/auth.jsp").forward(req, resp);
+        } else if(event.equals("all_orders")) {
+            req.getRequestDispatcher("static/jsp/all_orders.jsp").forward(req, resp);
+        } else if(event.equals("available_prod")) {
+            List<AvailableProduct> products =  DAOUtil.getInstance().getAvailableProductDAO().getAll();
+            req.setAttribute("products", products);
+            req.getRequestDispatcher("static/jsp/available_prod.jsp").forward(req, resp);
+        } else if(event.equals("choose_client")) {
+            req.getRequestDispatcher("static/jsp/choose_client.jsp").forward(req, resp);
+        } else if(event.equals("clients")) {
+            req.getRequestDispatcher("static/jsp/clients.jsp").forward(req, resp);
+        } else if(event.equals("new_client")){
+            req.getRequestDispatcher("static/jsp/new_client.jsp").forward(req, resp);
+        } else if(event.equals("new_user")) {
+            req.getRequestDispatcher("static/jsp/new_user.jsp").forward(req, resp);
+        } else if(event.equals("order")) {
+            req.getRequestDispatcher("static/jsp/order.jsp").forward(req, resp);
+        } else if(event.equals("add_products")){
+            req.getRequestDispatcher("static/jsp/add_products.jsp").forward(req, resp);
+        } else
+            req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
+
+    }
+
+    protected void processPostRequest(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        String event = req.getParameter("event");
+        if(event.equals("login")) {
+            String key = req.getParameter("key");
+            String user = req.getParameter("user");
+            if(key.equals("123")) {
+                UserDAO userService = new UserDAO();
+                List<User> users = userService.getAll();
+                for(User obj: users){
+                    if(user.equals(obj.getName())) {
+                        Cookie loginCookie = new Cookie("user", user);
+                        //setting cookie to expiry in 12 hours
+                        loginCookie.setMaxAge(60 * 60 * 12);
+                        resp.addCookie(loginCookie);
+                        resp.sendRedirect("warehouse?event=available_prod");
+                        break;
+                    }
+                }
+            } else if(key.equals("admin") && user.equals("admin")) {
+                Cookie loginCookie = new Cookie("user", user);
+                //setting cookie to expiry in 12 hours
+                loginCookie.setMaxAge(60 * 60 * 12);
+                resp.addCookie(loginCookie);
+                resp.sendRedirect("warehouse?event=available_prod");
+            } else {
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/warehouse");
+                PrintWriter out = resp.getWriter();
+                out.println("<font color=red>Either user name or password is wrong.</font>");
+                rd.include(req, resp);
+            }
+        } else if(event.equals("logout")) {
+            resp.setContentType("text/html");
+            Cookie loginCookie = null;
+            Cookie[] cookies = req.getCookies();
+            if(cookies != null){
+                for(Cookie cookie : cookies){
+                    if(cookie.getName().equals("user")){
+                        loginCookie = cookie;
+                        break;
+                    }
+                }
+            }
+            if(loginCookie != null){
+                loginCookie.setMaxAge(0);
+                resp.addCookie(loginCookie);
+            }
+            resp.setStatus(HttpServletResponse.SC_FOUND);
+            resp.sendRedirect("warehouse");
+        } else if(event.equals("new_user")) {
+            String user = req.getParameter("user");
+            UserDAO userService = new UserDAO();
+            userService.save(new User(user));
+            resp.sendRedirect("warehouse");
+        } else {
+            if (event.equals("add_products")) {
+                final Part filePart = req.getPart("file");
+                final String fileName = getFileName(filePart);
+
+                InputStream fileContent = null;
+                final PrintWriter writer = resp.getWriter();
+                try {
+                    fileContent = filePart.getInputStream();
+                    filePart.write("H:" + File.separator + fileName);
+                    FileReader reader = new FileReader("H:" + File.separator + fileName);
+                    JSONParser jsonParser = new JSONParser();
+                    JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
+
+                    JSONArray products = (JSONArray) jsonObject.get("products");
+                    new AddProductsCommand(products).execute();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (fileContent != null) {
+                        fileContent.close();
+                    }
+                    if (writer != null) {
+                        writer.close();
+                    }
+                }
+            }
+        }
+    }
+
+    //Add logic for error processing
+    protected String processError(String message) {
+        return message;
+    }
+
+    protected String getFileName(final Part part) {
+        final String partHeader = part.getHeader("content-disposition");
+
+        for(String content: part.getHeader("content-disposition").split(";")) {
+            if(content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return null;
     }
 }
