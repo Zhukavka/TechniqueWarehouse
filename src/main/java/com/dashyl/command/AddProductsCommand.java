@@ -12,17 +12,17 @@ import java.util.Iterator;
  * Created by Darya on 03.05.2015.
  */
 public class AddProductsCommand implements Command {
-    private JSONArray json;
+    private JSONObject json;
 
-    public AddProductsCommand(JSONArray json) {
+    public AddProductsCommand(JSONObject json) {
         this.json = json;
     }
 
     public void execute() {
         if(json.isEmpty())
             return;
-
-        for (Object aJson : json) {
+        JSONArray products = (JSONArray) json.get("products");
+        for (Object aJson : products) {
             JSONObject arrayObject = (JSONObject) aJson;
             String barcode = (String) arrayObject.get("barcode");
             double price = ((Number) arrayObject.get("price")).doubleValue();

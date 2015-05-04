@@ -1,8 +1,10 @@
 package com.dashyl.servlet;
 
 import com.dashyl.DAO.UserDAO;
+import com.dashyl.command.AddClientCommand;
 import com.dashyl.command.AddProductsCommand;
 import com.dashyl.entity.AvailableProduct;
+import com.dashyl.entity.Client;
 import com.dashyl.entity.User;
 import com.dashyl.util.DAOUtil;
 import org.json.simple.JSONArray;
@@ -15,11 +17,12 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Darya on 17.04.2015.
-**/
+ **/
 
 
 @MultipartConfig(location = "H:\\")//это потом в конфиг вынести
@@ -69,6 +72,8 @@ public class MainServlet extends HttpServlet {
         req.setAttribute("username", username);
         String event = req.getParameter("event");
         if(event == null) {
+            List<AvailableProduct> products =  DAOUtil.getInstance().getAvailableProductDAO().getAll();
+            req.setAttribute("products", products);
             req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
         } else if(event.equals("auth")) {
             String message = req.getParameter("message");
@@ -78,13 +83,11 @@ public class MainServlet extends HttpServlet {
             req.getRequestDispatcher("static/jsp/auth.jsp").forward(req, resp);
         } else if(event.equals("all_orders")) {
             req.getRequestDispatcher("static/jsp/all_orders.jsp").forward(req, resp);
-        } else if(event.equals("available_prod")) {
-            List<AvailableProduct> products =  DAOUtil.getInstance().getAvailableProductDAO().getAll();
-            req.setAttribute("products", products);
-            req.getRequestDispatcher("static/jsp/available_prod.jsp").forward(req, resp);
         } else if(event.equals("choose_client")) {
             req.getRequestDispatcher("static/jsp/choose_client.jsp").forward(req, resp);
         } else if(event.equals("clients")) {
+            List<Client> clients = DAOUtil.getInstance().getClientDAO().getAll();
+            req.setAttribute("clients", clients);
             req.getRequestDispatcher("static/jsp/clients.jsp").forward(req, resp);
         } else if(event.equals("new_client")){
             req.getRequestDispatcher("static/jsp/new_client.jsp").forward(req, resp);
@@ -94,13 +97,27 @@ public class MainServlet extends HttpServlet {
             req.getRequestDispatcher("static/jsp/order.jsp").forward(req, resp);
         } else if(event.equals("add_products")){
             req.getRequestDispatcher("static/jsp/add_products.jsp").forward(req, resp);
-        } else
+        } else{
+            List<AvailableProduct> products =  DAOUtil.getInstance().getAvailableProductDAO().getAll();
+            req.setAttribute("products", products);
             req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
+        }
+
 
     }
 
     protected void processPostRequest(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
+        String username = null;
+        Cookie[] cookies = req.getCookies();
+        if(cookies != null){
+            for(Cookie cookie : cookies){
+                if(cookie.getName().equals("user")) username = cookie.getValue();
+            }
+        }
+        req.setAttribute("username", username);
+
         String event = req.getParameter("event");
         if(event.equals("login")) {
             String key = req.getParameter("key");
@@ -133,7 +150,6 @@ public class MainServlet extends HttpServlet {
         } else if(event.equals("logout")) {
             resp.setContentType("text/html");
             Cookie loginCookie = null;
-            Cookie[] cookies = req.getCookies();
             if(cookies != null){
                 for(Cookie cookie : cookies){
                     if(cookie.getName().equals("user")){
@@ -146,41 +162,61 @@ public class MainServlet extends HttpServlet {
                 loginCookie.setMaxAge(0);
                 resp.addCookie(loginCookie);
             }
-            resp.setStatus(HttpServletResponse.SC_FOUND);
-            resp.sendRedirect("warehouse");
+            List<AvailableProduct> products =  DAOUtil.getInstance().getAvailableProductDAO().getAll();
+            req.setAttribute("products", products);
+            req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
         } else if(event.equals("new_user")) {
             String user = req.getParameter("user");
             UserDAO userService = new UserDAO();
             userService.save(new User(user));
             resp.sendRedirect("warehouse");
-        } else {
-            if (event.equals("add_products")) {
-                final Part filePart = req.getPart("file");
-                final String fileName = getFileName(filePart);
+        } else if (event.equals("add_products")) {
+            final Part filePart = req.getPart("file");
+            final String fileName = getFileName(filePart);
 
-                InputStream fileContent = null;
-                final PrintWriter writer = resp.getWriter();
-                try {
-                    fileContent = filePart.getInputStream();
-                    filePart.write("H:" + File.separator + fileName);
-                    FileReader reader = new FileReader("H:" + File.separator + fileName);
-                    JSONParser jsonParser = new JSONParser();
-                    JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
+            InputStream fileContent = null;
+            final PrintWriter writer = resp.getWriter();
+            try {
+                fileContent = filePart.getInputStream();
+                filePart.write("H:" + File.separator + fileName);
+                FileReader reader = new FileReader("H:" + File.separator + fileName);
+                JSONParser jsonParser = new JSONParser();
+                JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
 
-                    JSONArray products = (JSONArray) jsonObject.get("products");
-                    new AddProductsCommand(products).execute();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (fileContent != null) {
-                        fileContent.close();
-                    }
-                    if (writer != null) {
-                        writer.close();
-                    }
+                new AddProductsCommand(jsonObject).execute();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            } finally {
+                if (fileContent != null) {
+                    fileContent.close();
                 }
+                if (writer != null) {
+                    writer.close();
+                }
+            }
+        } else if(event.equals("new_client")) {
+            new AddClientCommand(req).execute();
+            List<AvailableProduct> products =  DAOUtil.getInstance().getAvailableProductDAO().getAll();
+            req.setAttribute("products", products);
+
+
+            req.setAttribute("username", username);
+            req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
+        } else if(event.equals("findProduct")) {
+            String criteria = req.getParameter("criteria");
+            String findValue = req.getParameter("findValue");
+            if(criteria.equals("barcode")) {
+                AvailableProduct product = DAOUtil.getInstance().getAvailableProductDAO().getByBarcode(findValue);
+                List<AvailableProduct> products = new ArrayList<AvailableProduct>();
+                products.add(product);
+                req.setAttribute("products", products);
+                req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
+            } else if(criteria.equals("name")) {
+                List products = DAOUtil.getInstance().getAvailableProductDAO().getByCategory(findValue);
+                req.setAttribute("products", products);
+                req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
             }
         }
     }

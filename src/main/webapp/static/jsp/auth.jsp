@@ -22,7 +22,7 @@
             <script>
                 var currentURL = window.location.href;
                 var baseURL = currentURL.substring(0, currentURL.lastIndexOf('?'));
-                window.location.href = baseURL + "?event=available_prod";
+                window.location.href = baseURL;
             </script>
         </c:if>
         <form id="login" method="post" action="/warehouse?event=login">

@@ -1,3 +1,10 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Darya
+  Date: 18.04.2015
+  Time: 17:29
+  To change this template use File | Settings | File Templates.
+--%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="com.dashyl.entity.AvailableProduct"%>
 <%@ page import="java.util.List"%>
@@ -9,40 +16,86 @@
     <style>
         <%@include file="/static/css/style.css"%>
     </style>
-    <title>Dashyl.com</title>
+    <title></title>
 </head>
 <body>
 <div id="bgc">
     <div class="wrapper">
         <%@include file="menu.jsp"%>
-
-        <h2><b>Товары в наличии на складе </b></h2>
-        <table align="left" border="1" cellpadding="1" cellspacing="1" id="products" style="width: 500px;">
+        <c:set var="products" value="${products}"/>
+        <br>
+        <h2>
+            <b>Товары в наличии на складе</b>
+            <c:if test="${username != null}">
+                <input type="button" value="Текущий заказ" onclick="currentOrder()">
+            </c:if>
+        </h2>
+        <p>Сортировать по: <select size="1"><option value="Наименованию">Наименованию</option><option value="Цене">Цене</option></select>
+            <input type="button" value="ОК"></p>
+        <hr>
+        <form method="post" action="warehouse?event=findProduct">
+                <label>Поиск по:
+                    <select size="1" name="criteria">
+                        <option value="name">Категории</option>
+                        <option value="barcode">Штрих-коду</option>
+                    </select>
+                </label>
+                <input placeholder="Введите" name="findValue" type="text">
+                <input type="submit" value="Поиск">
+        </form>
+        <hr>
+        <c:if test="${username != null}">
+            <p>
+                <input type="button" value="Добавить товары в БД" onclick="addProducts()">
+                <input type="button" value="Просмотр заказов">
+                <input type="button" value="Просмотр клиентов">
+            </p>
+        </c:if>
+        <table align="left" border="1" cellpadding="1" cellspacing="1" id="products" style="width: 850px;">
             <thead>
             <tr>
                 <th scope="col">Штрих-код</th>
                 <th scope="col">Категория</th>
                 <th scope="col">Наименование</th>
-                <th scope="col">Количество</th>
+                <th scope="col">Количество в наличии</th>
                 <th scope="col">Цена</th>
+                <c:if test="${username != null}">
+                    <th scope="col">Заказ</th>
+                </c:if>
             </tr>
-            <c:if test="${not empty products}">
-
-            </c:if>
             </thead>
             <tbody>
+            <c:if test="${not empty products}">
+                <c:forEach var="product" items="${products}">
+
+                    <tr>
+                        <td><c:out value="${product.product.barcode}"/></td>
+                        <td><c:out value="${product.product.category.name}"/></td>
+                        <td><c:out value="${product.product.name}"/></td>
+                        <td><c:out value="${product.amount}"/></td>
+                        <td><c:out value="${product.price}"/></td>
+                        <c:if test="${username != null}"><td><input type="text" placeholder="Кол-во для заказа"><input type="button" value="Добавить в заказ"></td></c:if>
+                    </tr>
+
+                </c:forEach>
+            </c:if>
             </tbody>
         </table>
-        <hr>
-        <p>Сортировать по:<select size="1"><option value="Наименованию">Наименованию</option><option value="Цене">Цене</option></select>
-            <input type="button" value="ОК"></p>
-        <hr>
-        <p>Поиск по:<select size="1"><option value="Наименованию">Наименованию</option><option value="Штрих-коду">Штрих-коду</option></select>
-            <input placeholder="Введите" type="text">
-            <input type="button" value="ОК"></p>
+
     </div>
 </div>
+
+<script>
+    function currentOrder() {
+        var currentURL = window.location.href;
+        var baseURL = currentURL.substring(0, currentURL.lastIndexOf('?'));
+        window.location.href = baseURL + "?event=order";
+    }
+    function addProducts() {
+        var currentURL = window.location.href;
+        var baseURL = currentURL.substring(0, currentURL.lastIndexOf('?'));
+        window.location.href = baseURL + "?event=add_products";
+    }
+</script>
 </body>
 </html>
-
-

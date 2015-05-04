@@ -30,7 +30,7 @@
         <script>
           var currentURL = window.location.href;
           var baseURL = currentURL.substring(0, currentURL.lastIndexOf('?'));
-          window.location.href = baseURL + "?event=available_prod&message=need_admin";
+          window.location.href = baseURL + "?message=need_admin";
         </script>
       </c:when>
     </c:choose>

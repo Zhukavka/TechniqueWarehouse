@@ -18,7 +18,6 @@ import javax.persistence.Table;
 		@NamedQuery(name = "Product.getAll", query = "select p from Product p"),
 		@NamedQuery(name = "Product.getByBarcode", query = "select p from Product p where p.barcode = :barcode")
 })
-
 public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

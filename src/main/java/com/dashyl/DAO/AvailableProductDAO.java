@@ -1,6 +1,8 @@
 package com.dashyl.DAO;
 
 import com.dashyl.entity.AvailableProduct;
+import com.dashyl.entity.Product;
+import com.dashyl.util.DAOUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -27,6 +29,16 @@ public class AvailableProductDAO {
 
     public AvailableProduct get(int id) {
         return em.find(AvailableProduct.class, id);
+    }
+
+    public AvailableProduct getByBarcode(String barcode) {
+        return (AvailableProduct) em.createQuery("SELECT c FROM AvailableProduct c WHERE c.product.barcode = :barcode")
+                .setParameter("barcode", barcode).getSingleResult();
+    }
+
+    public List getByCategory(String category) {
+        return em.createQuery("SELECT c FROM AvailableProduct c WHERE c.product.category.name LIKE :category")
+                .setParameter("category", category).getResultList();
     }
 
     public void update(AvailableProduct product) {

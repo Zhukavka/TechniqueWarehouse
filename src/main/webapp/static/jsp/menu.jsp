@@ -17,10 +17,8 @@
     <li><a href="/warehouse" name="home">Главная</a></li>
     <c:if test = "${username != null}">
       <li><a href="/warehouse?event=all_orders" name="orders">Все заказы</a></li>
-      <li><a href="/warehouse?event=available_prod" name="avail_products">Доступные продукты</a></li>
       <li><a href="/warehouse?event=order" name="order">Заказ</a></li>
       <li><a href="/warehouse?event=clients" name="clients">Клиенты</a></li>
-      <li><a href="/warehouse?event=new_client" name="new_client">Добавить клиента</a></li>
     </c:if>
     <c:if test = "${username == 'admin'}">
       <li><a href="/warehouse?event=new_user" name="new_user">Добавить пользователя</a></li>

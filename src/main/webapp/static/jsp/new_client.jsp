@@ -25,13 +25,12 @@
                 window.location.href = baseURL + "?event=auth&message=forbid";
             </script>
         </c:if>
-        <p>Имя: ; ; ; ;;<input maxlength="32" placeholder="Name" type="text"></p>
-        <p>E-mail: ; ;;<input maxlength="32" placeholder="E-mail" type="text"></p>
-        <div>Телефон:;<input maxlength="32" placeholder="Phone" type="text">
-            <div>;</div>
-        </div>
-        <p><input type="button" value="Добавить"></p>
-
+        <form method="post">
+            <p>    Имя:<input maxlength="32" name="name" placeholder="Name" type="text"></p>
+            <p> E-mail:<input maxlength="32" name="email" placeholder="E-mail" type="text"></p>
+            <p>Телефон:<input maxlength="32" name="phone" placeholder="Phone" type="text"></p>
+            <p><input type="submit" value="Добавить"></p>
+        </form>
     </div>
 </div>
 </body>

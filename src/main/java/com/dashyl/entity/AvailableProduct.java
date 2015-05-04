@@ -1,6 +1,11 @@
 package com.dashyl.entity;
 
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created by Darya on 05.04.2015.
@@ -8,6 +13,10 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "available_product")
+/*@NamedQueries({
+        @NamedQuery(name = "AvailableProduct.getAll", query = "select p from AvailableProduct p"),
+        @NamedQuery(name = "AvailableProduct.getByBarcode", query = "select a from AvailableProduct a where a.Product = :product")
+})*/
 @NamedQuery(name = "AvailableProduct.getAll", query = "select p from AvailableProduct p")
 public class AvailableProduct {
 
