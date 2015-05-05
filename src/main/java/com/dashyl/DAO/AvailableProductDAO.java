@@ -4,6 +4,7 @@ import com.dashyl.entity.AvailableProduct;
 import com.dashyl.entity.Product;
 import com.dashyl.util.DAOUtil;
 
+import javax.persistence.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
@@ -31,6 +32,17 @@ public class AvailableProductDAO {
         return em.find(AvailableProduct.class, id);
     }
 
+    public List getSortedByName(boolean order) {
+        String sortOrder = order ? "ASC" : "DESC";
+        Query query = em.createQuery("SELECT c FROM AvailableProduct c ORDER BY c.product.name " + sortOrder);
+        return query.getResultList();
+    }
+    public List getSortedByPrice(boolean order) {
+        String sortOrder = order ? "ASC" : "DESC";
+        Query query = em.createQuery("SELECT c FROM AvailableProduct c ORDER BY c.price " + sortOrder);
+        return query.getResultList();
+    }
+
     public AvailableProduct getByBarcode(String barcode) {
         return (AvailableProduct) em.createQuery("SELECT c FROM AvailableProduct c WHERE c.product.barcode = :barcode")
                 .setParameter("barcode", barcode).getSingleResult();
@@ -42,6 +54,11 @@ public class AvailableProductDAO {
     }
 
     public void update(AvailableProduct product) {
+        double oldPrice = this.getByBarcode(product.getProduct().getBarcode()).getPrice();
+        if(oldPrice != product.getPrice()) {
+            this.save(product);
+            return;
+        }
         em.getTransaction().begin();
         em.merge(product);
         em.getTransaction().commit();

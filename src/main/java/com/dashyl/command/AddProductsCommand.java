@@ -31,7 +31,7 @@ public class AddProductsCommand implements Command {
             Product product = DAOUtil.getInstance().getProductDAO().getByBarcode(barcode);
             if (product == null) continue;
 
-            DAOUtil.getInstance().getAvailableProductDAO().save(new AvailableProduct(product, amount, price));
+            DAOUtil.getInstance().getAvailableProductDAO().update(new AvailableProduct(product, amount, price));
         }
     }
 }

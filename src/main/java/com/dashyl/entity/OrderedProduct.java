@@ -18,10 +18,13 @@ public class OrderedProduct {
     private Product product;
     @Column(name = "amount")
     private int amount;
+    @Column(name = "price")
+    private double price;
 
-    public OrderedProduct(Product product, int amount) {
-        this.product = product;
+    public OrderedProduct(AvailableProduct product, int amount) {
+        this.product = product.getProduct();
         this.amount = amount;
+        this.price = product.getPrice();
     }
 
     public OrderedProduct() {
@@ -31,8 +34,9 @@ public class OrderedProduct {
         return id;
     }
 
-    public void setId(int id) {
+    public OrderedProduct setId(int id) {
         this.id = id;
+        return this;
     }
 
     public Product getProduct() {
@@ -49,6 +53,14 @@ public class OrderedProduct {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     @Override

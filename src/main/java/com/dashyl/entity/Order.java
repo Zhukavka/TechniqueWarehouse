@@ -4,6 +4,7 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
@@ -42,6 +43,7 @@ public class Order {
 	}
 
 	public Order() {
+        products = new ArrayList<OrderedProduct>();
 	}
 
 	public int getId() {
@@ -83,6 +85,14 @@ public class Order {
 	public void setProducts(List<OrderedProduct> products) {
 		this.products = products;
 	}
+
+	public void addProductToOrder(OrderedProduct product) {
+		products.add(product);
+	}
+
+    public void deleteProduct(OrderedProduct product) {
+        products.remove(product);
+    }
 
 	public User getUser() {
 		return user;

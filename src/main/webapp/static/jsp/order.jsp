@@ -6,6 +6,11 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="com.dashyl.entity.Order"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.dashyl.entity.Product"%>
+<%@ page import="com.dashyl.entity.OrderedProduct"%>
+<%@ page import="com.dashyl.entity.User"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -18,6 +23,7 @@
 <div id="bgc">
     <div class="wrapper">
         <%@include file="menu.jsp"%>
+        <c:set var="order" value="${order}"/>
         <c:if test="${username == null}">
             <script>
                 var currentURL = window.location.href;
@@ -37,12 +43,35 @@
             </tr>
             </thead>
             <tbody>
+            <c:if test="${order != null}">
+                <c:forEach var="product" items="${order.products}">
+
+                    <tr>
+                        <td><c:out value="${product.product.barcode}"/></td>
+                        <td><c:out value="${product.product.name}"/></td>
+                        <td><c:out value="${product.amount}"/></td>
+                        <td><c:out value="${product.price}"/></td>
+                        <td>
+                            <form method="post" action="warehouse?event=removeFromOrder&id=${product.id}">
+                                <input type="submit" value="Убрать из заказа">
+                            </form>
+                        </td>
+                    </tr>
+
+                </c:forEach>
+            </c:if>
             </tbody>
         </table>
-        <p>;</p>
-        <p>; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; Итого:;<input maxlength="32" type="text" value="Общая сумма"></p>
-        <p><input type="button" value="Просмотр клиентов" onclick="location.href='clients'">
-            ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ;<input type="button" value="Оформить заказ"></p>
+        <p>Итого:<input maxlength="32" type="text" value="Общая сумма"></p>
+        <p>
+            <input type="button" value="Просмотр клиентов" onclick="location.href='clients'">
+        <form method="post" action="warehouse?event=cancelOrder">
+            <input type="submit" value="Отменить заказ">
+        </form>
+        <form method="post" action="warehouse?event=applyOrder">
+            <input type="submit" value="Оформить заказ">
+        </form>
+        </p>
     </div>
 </div>
 </body>

@@ -1,11 +1,10 @@
 package com.dashyl.servlet;
 
 import com.dashyl.DAO.UserDAO;
+import com.dashyl.OrderFactory;
 import com.dashyl.command.AddClientCommand;
 import com.dashyl.command.AddProductsCommand;
-import com.dashyl.entity.AvailableProduct;
-import com.dashyl.entity.Client;
-import com.dashyl.entity.User;
+import com.dashyl.entity.*;
 import com.dashyl.util.DAOUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -94,6 +93,8 @@ public class MainServlet extends HttpServlet {
         } else if(event.equals("new_user")) {
             req.getRequestDispatcher("static/jsp/new_user.jsp").forward(req, resp);
         } else if(event.equals("order")) {
+            Order order = OrderFactory.getInstance().getOrder(username);
+            req.setAttribute("order", order);
             req.getRequestDispatcher("static/jsp/order.jsp").forward(req, resp);
         } else if(event.equals("add_products")){
             req.getRequestDispatcher("static/jsp/add_products.jsp").forward(req, resp);
@@ -195,29 +196,77 @@ public class MainServlet extends HttpServlet {
                 if (writer != null) {
                     writer.close();
                 }
+                req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
             }
         } else if(event.equals("new_client")) {
             new AddClientCommand(req).execute();
             List<AvailableProduct> products =  DAOUtil.getInstance().getAvailableProductDAO().getAll();
             req.setAttribute("products", products);
 
-
-            req.setAttribute("username", username);
             req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
         } else if(event.equals("findProduct")) {
             String criteria = req.getParameter("criteria");
             String findValue = req.getParameter("findValue");
+            List<AvailableProduct> products = new ArrayList<AvailableProduct>();
             if(criteria.equals("barcode")) {
                 AvailableProduct product = DAOUtil.getInstance().getAvailableProductDAO().getByBarcode(findValue);
-                List<AvailableProduct> products = new ArrayList<AvailableProduct>();
                 products.add(product);
-                req.setAttribute("products", products);
-                req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
-            } else if(criteria.equals("name")) {
-                List products = DAOUtil.getInstance().getAvailableProductDAO().getByCategory(findValue);
-                req.setAttribute("products", products);
-                req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
+            } else if(criteria.equals("category")) {
+                products = DAOUtil.getInstance().getAvailableProductDAO().getByCategory(findValue);
             }
+            req.setAttribute("products", products);
+            req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
+        } else if(event.equals("sortProduct")) {
+            String criteria = req.getParameter("criteria");
+            List<AvailableProduct> products = new ArrayList<AvailableProduct>();
+            if(criteria.equals("name")) {
+                products = DAOUtil.getInstance().getAvailableProductDAO().getSortedByName(true);
+            } else if(criteria.equals("price")) {
+                products = DAOUtil.getInstance().getAvailableProductDAO().getSortedByPrice(true);
+            }
+            req.setAttribute("products", products);
+            req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
+        } else if(event.equals("addToOrder")) {
+            int productId = Integer.valueOf( req.getParameter("id") );
+            int amount = Integer.valueOf( req.getParameter("amount") );
+            AvailableProduct product = DAOUtil.getInstance().getAvailableProductDAO().get(productId);
+            OrderFactory.getInstance().addProductToOrder( username, product, amount );
+
+            product.setAmount( product.getAmount() - amount);
+            DAOUtil.getInstance().getAvailableProductDAO().update(product);
+
+            List<AvailableProduct> products =  DAOUtil.getInstance().getAvailableProductDAO().getAll();
+            req.setAttribute("products", products);
+            req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
+        } else if(event.equals("cancelOrder")) {
+            Order order = OrderFactory.getInstance().getOrder(username);
+            for(OrderedProduct product: order.getProducts()) {
+                AvailableProduct availProduct = DAOUtil.getInstance().getAvailableProductDAO().getByBarcode(product.getProduct().getBarcode());
+                availProduct.setAmount(product.getAmount() + availProduct.getAmount());
+                DAOUtil.getInstance().getAvailableProductDAO().update(availProduct);
+
+            }
+            OrderFactory.getInstance().deleteAlProducts(username);
+            order = OrderFactory.getInstance().getOrder(username);
+            req.setAttribute("order", order);
+            req.getRequestDispatcher("static/jsp/order.jsp").forward(req, resp);
+        } else if(event.equals("removeFromOrder")) {
+            int productId = Integer.valueOf( req.getParameter("id") );
+            Order order = OrderFactory.getInstance().getOrder(username);
+
+            List<OrderedProduct> products = order.getProducts();
+            OrderedProduct product = products.get(products.indexOf(new OrderedProduct().setId(productId)));
+            int amount = product.getAmount();
+            AvailableProduct availableProduct = DAOUtil.getInstance().getAvailableProductDAO().getByBarcode(product.getProduct().getBarcode());
+            availableProduct.setAmount(availableProduct.getAmount() + amount);
+            DAOUtil.getInstance().getAvailableProductDAO().update(availableProduct);
+
+            products.remove(new OrderedProduct().setId(productId));
+            order = OrderFactory.getInstance().getOrder(username);
+            req.setAttribute("order", order);
+            req.getRequestDispatcher("static/jsp/order.jsp").forward(req, resp);
+        } else if(event.equals("applyOrder")) {
+
         }
     }
 

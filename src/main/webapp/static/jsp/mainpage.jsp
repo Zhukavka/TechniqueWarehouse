@@ -30,18 +30,25 @@
                 <input type="button" value="Текущий заказ" onclick="currentOrder()">
             </c:if>
         </h2>
-        <p>Сортировать по: <select size="1"><option value="Наименованию">Наименованию</option><option value="Цене">Цене</option></select>
-            <input type="button" value="ОК"></p>
+        <form method="post" action="warehouse?event=sortProduct">
+            <label>Сортировать по:
+                <select size="1" name="criteria">
+                    <option value="name">Наименованию</option>
+                    <option value="price">Цене</option>
+                </select>
+            </label>
+            <input type="submit" value="Сортировать">
+        </form>
         <hr>
         <form method="post" action="warehouse?event=findProduct">
-                <label>Поиск по:
-                    <select size="1" name="criteria">
-                        <option value="name">Категории</option>
-                        <option value="barcode">Штрих-коду</option>
-                    </select>
-                </label>
-                <input placeholder="Введите" name="findValue" type="text">
-                <input type="submit" value="Поиск">
+            <label>Поиск по:
+                <select size="1" name="criteria">
+                    <option value="category">Категории</option>
+                    <option value="barcode">Штрих-коду</option>
+                </select>
+            </label>
+            <input placeholder="Введите" name="findValue" type="text">
+            <input type="submit" value="Поиск">
         </form>
         <hr>
         <c:if test="${username != null}">
@@ -74,7 +81,14 @@
                         <td><c:out value="${product.product.name}"/></td>
                         <td><c:out value="${product.amount}"/></td>
                         <td><c:out value="${product.price}"/></td>
-                        <c:if test="${username != null}"><td><input type="text" placeholder="Кол-во для заказа"><input type="button" value="Добавить в заказ"></td></c:if>
+                        <c:if test="${username != null}">
+                            <td>
+                                <form method="post" action="warehouse?event=addToOrder&id=${product.id}">
+                                    <input type="text" name="amount" required autocomplete="off" placeholder="Кол-во для заказа">
+                                    <input type="submit" value="Добавить в заказ">
+                                </form>
+                            </td>
+                        </c:if>
                     </tr>
 
                 </c:forEach>
