@@ -34,7 +34,7 @@
         </script>
       </c:when>
     </c:choose>
-    <form id="new_user" method="post">
+    <form id="new_user" method="post" action="warehouse?event=add_user">
       <p><input maxlength="32" placeholder="Имя пользователя" type="text" name="user"><input type="submit" value="Добавить"></p>
     </form>
   </div>

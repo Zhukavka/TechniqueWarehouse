@@ -1,8 +1,6 @@
 package com.dashyl.DAO;
 
 import com.dashyl.entity.AvailableProduct;
-import com.dashyl.entity.Product;
-import com.dashyl.util.DAOUtil;
 
 import javax.persistence.Query;
 import javax.persistence.EntityManager;

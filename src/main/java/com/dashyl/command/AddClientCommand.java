@@ -1,29 +1,27 @@
 package com.dashyl.command;
 
 import com.dashyl.entity.Client;
-import com.dashyl.util.DAOUtil;
+import com.dashyl.servlet.manager.Page;
+import com.dashyl.util.DAOFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by Darya on 04.05.2015.
  */
-public class AddClientCommand implements Command {
+public class AddClientCommand implements ServletCommand {
 
-    private HttpServletRequest request;
-
-    public AddClientCommand(HttpServletRequest req) {
-        this.request = req;
-    }
-
-    public void execute() {
+    public String execute(HttpServletRequest request, HttpServletResponse response) {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
 
         /*Потом написать проверки правильности ввода*/
 
-        DAOUtil.getInstance().getClientDAO().save(new Client(name, email, phone));
+        DAOFactory.getInstance().getClientDAO().save(new Client(name, email, phone));
+
+        return Page.HOME;
     }
 }
 

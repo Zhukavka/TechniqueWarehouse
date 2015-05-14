@@ -25,7 +25,7 @@
                 window.location.href = baseURL + "?event=auth&message=forbid";
             </script>
         </c:if>
-        <form method="post">
+        <form method="post" action="warehouse?event=add_client">
             <p>    Имя:<input maxlength="32" name="name" placeholder="Name" type="text"></p>
             <p> E-mail:<input maxlength="32" name="email" placeholder="E-mail" type="text"></p>
             <p>Телефон:<input maxlength="32" name="phone" placeholder="Phone" type="text"></p>

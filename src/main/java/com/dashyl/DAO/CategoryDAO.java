@@ -17,20 +17,8 @@ public class CategoryDAO {
         em.getTransaction().commit();
     }
 
-    public void delete(Category category) {
-        em.getTransaction().begin();
-        em.remove(category);
-        em.getTransaction().commit();
-    }
-
     public Category get(int id) {
         return em.find(Category.class, id);
-    }
-
-    public void update(Category category) {
-        em.getTransaction().begin();
-        em.merge(category);
-        em.getTransaction().commit();
     }
 
     public List<Category> getAll() {

@@ -24,7 +24,7 @@ public class Product {
 	private int id;
 	@Column(name = "barcode", length = 45, unique = true)
 	private String barcode;
-	@Column(name = "product_name", length = 45)
+	@Column(name = "product_name", length = 45, unique = true)
 	private String name;
 	@ManyToOne
 	@JoinColumn(name="category_id")
