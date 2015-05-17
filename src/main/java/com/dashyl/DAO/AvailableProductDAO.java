@@ -52,6 +52,10 @@ public class AvailableProductDAO {
     }
 
     public void update(AvailableProduct product) {
+        if(product.getAmount() == 0) {
+            delete(product);
+            return;
+        }
         double oldPrice = this.getByBarcode(product.getProduct().getBarcode()).getPrice();
         if(oldPrice != product.getPrice()) {
             this.save(product);

@@ -19,9 +19,7 @@ public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	@Column(name = "date", updatable = false, insertable = false)
-	@Generated(value = GenerationTime.INSERT)
-	@Temporal(TemporalType.DATE)
+
 	private Date date;
 	@Column(name = "cost", nullable = false)
 	private double cost;
@@ -35,8 +33,12 @@ public class Order {
 	@JoinColumn(name = "order_id")
 	private List<OrderedProduct> products;
 
-	public Order(Date date, double cost, Client client, List<OrderedProduct> products) {
-		this.date = date;
+    @PrePersist
+    protected void onCreate() {
+        date = new Date();
+    }
+
+	public Order(double cost, Client client, User user, List<OrderedProduct> products) {
 		this.cost = cost;
 		this.client = client;
 		this.products = products;
@@ -63,6 +65,11 @@ public class Order {
 	}
 
 	public double getCost() {
+		if(!products.isEmpty() && cost == 0) {
+			for(OrderedProduct product: products) {
+				cost += product.getAmount() * product.getPrice();
+			}
+		}
 		return cost;
 	}
 

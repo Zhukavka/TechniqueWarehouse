@@ -3,10 +3,7 @@ package com.dashyl.command.manager;
 import com.dashyl.command.*;
 import com.dashyl.command.auth.LoginCommand;
 import com.dashyl.command.auth.LogoutCommand;
-import com.dashyl.command.order.AddToOrderCommand;
-import com.dashyl.command.order.ApplyOrderCommand;
-import com.dashyl.command.order.CancelOrderCommand;
-import com.dashyl.command.order.RemoveFromOrderCommand;
+import com.dashyl.command.order.*;
 import com.dashyl.command.product.AddProductsCommand;
 import com.dashyl.command.product.FindProductCommand;
 import com.dashyl.command.product.SortProductCommand;
@@ -33,6 +30,9 @@ public class CommandManager {
         commands.put("cancelOrder", new CancelOrderCommand());
         commands.put("removeFromOrder", new RemoveFromOrderCommand());
         commands.put("applyOrder", new ApplyOrderCommand());
+        commands.put("ordersBetweenDates", new OrdersBetweenDates());
+        commands.put("orderByClient", new OrderByClientCommand());
+        commands.put("saveReport", new SaveReportCommand());
     }
 
     public static ServletCommand getCommand(String key) {

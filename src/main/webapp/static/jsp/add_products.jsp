@@ -13,25 +13,30 @@
   <title></title>
 </head>
 <body>
-<div id="bgc">
-  <div class="wrapper">
-    <%@include file="menu.jsp"%>
-    <c:if test="${username == null}">
-      <script>
-        var currentURL = window.location.href;
-        var baseURL = currentURL.substring(0, currentURL.lastIndexOf('?'));
-        window.location.href = baseURL + "?event=auth&message=forbid";
-      </script>
-    </c:if>
+<section class="container">
+  <div id="bgc">
+    <div class="wrapper">
+      <%@include file="menu.jsp"%>
+      <div id="holder">
+        <div id="content" class="homepage">
+          <c:if test="${username == null}">
+            <script>
+              var currentURL = window.location.href;
+              var baseURL = currentURL.substring(0, currentURL.lastIndexOf('?'));
+              window.location.href = baseURL + "?event=auth&message=forbid";
+            </script>
+          </c:if>
 
-    <form id="fileImport" method="post" enctype="multipart/form-data">
-      <p>Выберите файл</p>
-      <p><input id="fileImportData" type="file" multiple accept="application/json" name="file">
-        <input type="submit" value="Отправить"></p>
-    </form>
+          <form id="fileImport" method="post" enctype="multipart/form-data">
+            <p>Выберите файл</p>
+            <p><input id="fileImportData" type="file" multiple accept="application/json" name="file">
+              <input type="submit" value="Отправить"></p>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-
+</section>
 
 <script>
   $(document).ready(function(){
@@ -100,7 +105,7 @@
           console.log("Ajax is finished");
         }
       });
-  }
+    }
   });
 </script>
 </body>

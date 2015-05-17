@@ -20,12 +20,15 @@ public class FindProductCommand implements ServletCommand {
         String criteria = request.getParameter("criteria");
         String findValue = request.getParameter("findValue");
         List<AvailableProduct> products = new ArrayList<AvailableProduct>();
-        if(criteria.equals("barcode")) {
-            AvailableProduct product = DAOFactory.getInstance().getAvailableProductDAO().getByBarcode(findValue);
-            products.add(product);
-        } else if(criteria.equals("category")) {
-            products = DAOFactory.getInstance().getAvailableProductDAO().getByCategory(findValue);
-        }
+        if(!findValue.isEmpty()) {
+            if (criteria.equals("barcode")) {
+                AvailableProduct product = DAOFactory.getInstance().getAvailableProductDAO().getByBarcode(findValue);
+                products.add(product);
+            } else if (criteria.equals("category")) {
+                products = DAOFactory.getInstance().getAvailableProductDAO().getByCategory(findValue);
+            }
+        } else
+            products = DAOFactory.getInstance().getAvailableProductDAO().getAll();
         request.setAttribute("products", products);
         return Page.HOME;
     }

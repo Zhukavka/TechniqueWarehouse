@@ -18,15 +18,27 @@ import java.util.List;
 public class AddToOrderCommand implements ServletCommand {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         int productId = Integer.valueOf(request.getParameter("id"));
-        int amount = Integer.valueOf( request.getParameter("amount") );
-        AvailableProduct product = DAOFactory.getInstance().getAvailableProductDAO().get(productId);
-        OrderFactory.getInstance().addProductToOrder((String) request.getAttribute("username"), product, amount);
+        try {
+            int amount = Integer.valueOf(request.getParameter("amount"));
+            if(amount > 0) {
+                AvailableProduct product = DAOFactory.getInstance().getAvailableProductDAO().get(productId);
+                if(amount <= product.getAmount()) {
+                    OrderFactory.getInstance().addProductToOrder((String) request.getAttribute("username"), product, amount);
+                    product.setAmount(product.getAmount() - amount);
+                    DAOFactory.getInstance().getAvailableProductDAO().update(product);
+                }
+            } else {
 
-        product.setAmount(product.getAmount() - amount);
-        DAOFactory.getInstance().getAvailableProductDAO().update(product);
+            }
+        } catch(NumberFormatException ex) {
 
-        List<AvailableProduct> products =  DAOFactory.getInstance().getAvailableProductDAO().getAll();
-        request.setAttribute("products", products);
-        return Page.HOME;
+        } finally {
+            List<AvailableProduct> products =  DAOFactory.getInstance().getAvailableProductDAO().getAll();
+            request.setAttribute("products", products);
+            return Page.HOME;
+        }
+
+
+
     }
 }

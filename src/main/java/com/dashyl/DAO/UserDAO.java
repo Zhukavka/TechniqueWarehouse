@@ -1,5 +1,6 @@
 package com.dashyl.DAO;
 
+import com.dashyl.entity.AvailableProduct;
 import com.dashyl.entity.Order;
 import com.dashyl.entity.User;
 
@@ -18,6 +19,11 @@ public class UserDAO {
         em.getTransaction().begin();
         em.persist(user);
         em.getTransaction().commit();
+    }
+
+    public User getByName(String username) {
+        return (User) em.createQuery("SELECT u FROM User u WHERE u.name = :username")
+                .setParameter("username", username).getSingleResult();
     }
 
     public List<User> getAll() {

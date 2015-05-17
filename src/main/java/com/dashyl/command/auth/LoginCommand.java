@@ -2,14 +2,18 @@ package com.dashyl.command.auth;
 
 import com.dashyl.DAO.UserDAO;
 import com.dashyl.command.ServletCommand;
+import com.dashyl.entity.AvailableProduct;
 import com.dashyl.entity.User;
 import com.dashyl.servlet.manager.Page;
+import com.dashyl.util.DAOFactory;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 /**
@@ -39,12 +43,13 @@ public class LoginCommand implements ServletCommand {
             loginCookie.setMaxAge(60 * 60 * 12);
             response.addCookie(loginCookie);
         } else {
-            /*RequestDispatcher rd = getServletContext().getRequestDispatcher("/warehouse");
+            RequestDispatcher rd = request.getRequestDispatcher("/warehouse");
             PrintWriter out = response.getWriter();
             out.println("<font color=red>Either user name or password is wrong.</font>");
-            rd.include(request, response);*/
+            rd.include(request, response);
         }
-
+        List<AvailableProduct> products =  DAOFactory.getInstance().getAvailableProductDAO().getAll();
+        request.setAttribute("products", products);
         return Page.HOME;
     }
 }

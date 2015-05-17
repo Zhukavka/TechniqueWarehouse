@@ -1,6 +1,7 @@
 package com.dashyl.servlet;
 
 import com.dashyl.OrderFactory;
+import com.dashyl.command.auth.LogoutCommand;
 import com.dashyl.command.manager.CommandFactory;
 import com.dashyl.entity.*;
 import com.dashyl.servlet.manager.Page;
@@ -10,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.*;
 import java.io.*;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -71,15 +73,19 @@ public class MainServlet extends HttpServlet {
         if(event == null){
             List<AvailableProduct> products =  DAOFactory.getInstance().getAvailableProductDAO().getAll();
             req.setAttribute("products", products);
-            req.getRequestDispatcher(Page.HOME).forward(req, resp);
+            req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
         } else if(event.equals("auth")) {
             String message = req.getParameter("message");
             if(message != null) {
                 req.setAttribute("message", processError(message));
             }
-            req.getRequestDispatcher(Page.AUTH).forward(req, resp);
+            req.getRequestDispatcher("static/jsp/auth.jsp").forward(req, resp);
         } else if(event.equals("all_orders")) {
-            req.getRequestDispatcher(Page.ORDERS).forward(req, resp);
+            List<Order> orders = DAOFactory.getInstance().getOrderDAO().getAll();
+            req.setAttribute("orders", orders);
+            List<Client> clients = DAOFactory.getInstance().getClientDAO().getAll();
+            req.setAttribute("clients", clients);
+            req.getRequestDispatcher("static/jsp/all_orders.jsp").forward(req, resp);
         } else if(event.equals("choose_client")) {
             req.getRequestDispatcher("static/jsp/choose_client.jsp").forward(req, resp);
         } else if(event.equals("clients")) {
@@ -95,13 +101,17 @@ public class MainServlet extends HttpServlet {
             req.setAttribute("order", order);
             List<Client> clients = DAOFactory.getInstance().getClientDAO().getAll();
             req.setAttribute("clients", clients);
+            if(order != null)
+                req.setAttribute("totalPrice", order.getCost());
             req.getRequestDispatcher("static/jsp/order.jsp").forward(req, resp);
         } else if(event.equals("add_products")){
             req.getRequestDispatcher("static/jsp/add_products.jsp").forward(req, resp);
-        } else{
-            List<AvailableProduct> products =  DAOFactory.getInstance().getAvailableProductDAO().getAll();
+        }else if (event.equals("logout")) {
+            resp.sendRedirect(new LogoutCommand().execute(req,resp));
+        } else {
+            List<AvailableProduct> products = DAOFactory.getInstance().getAvailableProductDAO().getAll();
             req.setAttribute("products", products);
-            req.getRequestDispatcher(Page.HOME).forward(req, resp);
+            req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
         }
 
 
@@ -114,7 +124,13 @@ public class MainServlet extends HttpServlet {
         req.setAttribute("username", username);
 
         String pageName = CommandFactory.getCommand(req).execute(req, resp);
-        req.getRequestDispatcher(pageName).forward(req, resp);
+        username = getUsernameFromCookie(req);
+        req.setAttribute("username", username);
+        if(pageName == Page.ORDERS) {
+            req.getRequestDispatcher("static/jsp/all_orders.jsp").forward(req, resp);
+        } else
+            resp.sendRedirect(pageName);
+        //req.getRequestDispatcher(pageName).forward(req, resp);
 
     }
 
