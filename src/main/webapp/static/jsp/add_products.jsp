@@ -1,13 +1,9 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Darya
-  Date: 02.05.2015
-  Time: 16:34
-  To change this template use File | Settings | File Templates.
---%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:requestEncoding value="utf-8" />
 <html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <head>
   <style><%@include file="/static/css/style.css"%></style>
   <title></title>

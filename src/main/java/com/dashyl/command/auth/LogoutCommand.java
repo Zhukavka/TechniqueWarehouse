@@ -2,7 +2,6 @@ package com.dashyl.command.auth;
 
 import com.dashyl.command.ServletCommand;
 import com.dashyl.entity.AvailableProduct;
-import com.dashyl.servlet.manager.Page;
 import com.dashyl.util.DAOFactory;
 
 import javax.servlet.ServletException;
@@ -34,6 +33,7 @@ public class LogoutCommand implements ServletCommand {
         }
         List<AvailableProduct> products =  DAOFactory.getInstance().getAvailableProductDAO().getAll();
         request.setAttribute("products", products);
-        return Page.HOME;
+        response.sendRedirect("warehouse");
+        return "";
     }
 }

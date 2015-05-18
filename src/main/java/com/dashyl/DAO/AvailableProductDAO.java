@@ -41,14 +41,17 @@ public class AvailableProductDAO {
         return query.getResultList();
     }
 
-    public AvailableProduct getByBarcode(String barcode) {
-        return (AvailableProduct) em.createQuery("SELECT c FROM AvailableProduct c WHERE c.product.barcode = :barcode")
-                .setParameter("barcode", barcode).getSingleResult();
+    public List<AvailableProduct> getByBarcode(String barcode) {
+        String temp = "%" + barcode + "%";
+        Query query = em.createQuery("SELECT c FROM AvailableProduct c WHERE c.product.barcode LIKE :barcode")
+                .setParameter("barcode", temp);
+        return (List<AvailableProduct>) query.getResultList();
     }
 
     public List getByCategory(String category) {
+        String temp = "%" + category + "%";
         return em.createQuery("SELECT c FROM AvailableProduct c WHERE c.product.category.name LIKE :category")
-                .setParameter("category", category).getResultList();
+                .setParameter("category", temp).getResultList();
     }
 
     public void update(AvailableProduct product) {
@@ -56,7 +59,7 @@ public class AvailableProductDAO {
             delete(product);
             return;
         }
-        double oldPrice = this.getByBarcode(product.getProduct().getBarcode()).getPrice();
+        double oldPrice = this.getByBarcode(product.getProduct().getBarcode()).get(0).getPrice();
         if(oldPrice != product.getPrice()) {
             this.save(product);
             return;
