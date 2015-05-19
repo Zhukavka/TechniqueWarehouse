@@ -56,7 +56,7 @@
                                         <td><c:out value="${product.product.barcode}"/></td>
                                         <td><c:out value="${product.product.name}"/></td>
                                         <td><c:out value="${product.amount}"/></td>
-                                        <td><c:out value="${product.price}"/></td>
+                                        <td><c:out value="${String.format('%.0f',product.price)}"/></td>
                                         <td>
                                             <form method="post" action="warehouse?event=removeFromOrder&id=${product.id}">
                                                 <input type="submit" value="Убрать из заказа">

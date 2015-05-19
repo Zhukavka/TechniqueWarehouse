@@ -25,13 +25,15 @@ public class AddToOrderCommand implements ServletCommand {
                 if(amount <= product.getAmount()) {
                     OrderFactory.getInstance().addProductToOrder((String) request.getAttribute("username"), product, amount);
                     product.setAmount(product.getAmount() - amount);
-                    DAOFactory.getInstance().getAvailableProductDAO().update(product);
+                    DAOFactory.getInstance().getAvailableProductDAO().update(product, false);
                 }
             } else {
 
             }
         } catch(NumberFormatException ex) {
 
+        } catch(Exception ex) {
+            ex.printStackTrace();
         } finally {
             List<AvailableProduct> products =  DAOFactory.getInstance().getAvailableProductDAO().getAll();
             request.setAttribute("products", products);

@@ -4,7 +4,9 @@ import com.dashyl.entity.AvailableProduct;
 import com.dashyl.entity.Order;
 import com.dashyl.entity.OrderedProduct;
 import com.dashyl.entity.User;
+import com.dashyl.util.DAOFactory;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -24,7 +26,27 @@ public class OrderFactory {
 
     public void addProductToOrder(String username, AvailableProduct product, int amount) {
         if( currentOrders.containsKey(username) ) {
-            currentOrders.get(username).addProductToOrder(new OrderedProduct(product, amount));
+            Order order = currentOrders.get(username);
+            for(OrderedProduct productInOrder: order.getProducts()) {
+                if(productInOrder.getPrice() == product.getPrice()) {
+                    productInOrder.setAmount(productInOrder.getAmount() + amount);
+                    return;
+                }
+            }
+            List<OrderedProduct> products = order.getProducts();
+            int id;
+            if(products.size() > 0) {
+                id = products.get(products.size() - 1).getId() + 1;
+            } else {
+                List<OrderedProduct> productsInDB = DAOFactory.getInstance().getOrderedProductDAO().getAll();
+                if(productsInDB.size() > 0) {
+                    id = productsInDB.get(productsInDB.size() - 1).getId() + 1;
+                } else
+                    id = 0;
+            }
+            OrderedProduct productToOrder = new OrderedProduct(product, amount);
+            productToOrder.setId(id);
+            order.addProductToOrder(productToOrder);
         } else {
             Order order = new Order();
             order.setUser( new User( username ) );

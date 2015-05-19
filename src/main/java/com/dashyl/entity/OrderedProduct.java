@@ -1,6 +1,9 @@
 package com.dashyl.entity;
 
+import com.dashyl.util.DAOFactory;
+
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Darya on 05.04.2015.
@@ -24,6 +27,13 @@ public class OrderedProduct {
     public OrderedProduct(AvailableProduct product, int amount) {
         this.product = product.getProduct();
         this.amount = amount;
+        this.price = product.getPrice();
+    }
+
+
+    public OrderedProduct(OrderedProduct product) {
+        this.product = product.getProduct();
+        this.amount = product.getAmount();
         this.price = product.getPrice();
     }
 

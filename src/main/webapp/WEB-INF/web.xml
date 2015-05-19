@@ -7,8 +7,20 @@
         <servlet-name>MainServlet</servlet-name>
         <servlet-class>com.dashyl.servlet.MainServlet</servlet-class>
     </servlet>
+    <filter>
+        <filter-name>FormEncodingSetterFilter</filter-name>
+        <filter-class>com.dashyl.FormEncodingSetterFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
     <servlet-mapping>
         <servlet-name>MainServlet</servlet-name>
         <url-pattern>/warehouse</url-pattern>
     </servlet-mapping>
+    <filter-mapping>
+        <filter-name>FormEncodingSetterFilter</filter-name>
+        <url-pattern>/warehouse/*</url-pattern>
+    </filter-mapping>
 </web-app>

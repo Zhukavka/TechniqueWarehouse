@@ -42,6 +42,7 @@ public class Order {
 		this.cost = cost;
 		this.client = client;
 		this.products = products;
+		this.user = user;
 	}
 
 	public Order() {

@@ -23,10 +23,20 @@ public class CancelOrderCommand implements ServletCommand {
         Order order = OrderFactory.getInstance().getOrder( username );
         if(order != null) {
             for(OrderedProduct product: order.getProducts()) {
-                AvailableProduct availProduct = DAOFactory.getInstance().getAvailableProductDAO().getByBarcode(product.getProduct().getBarcode()).get(0);
-                availProduct.setAmount(product.getAmount() + availProduct.getAmount());
-                DAOFactory.getInstance().getAvailableProductDAO().update(availProduct);
-
+                List<AvailableProduct> productsInDB = DAOFactory.getInstance().getAvailableProductDAO()
+                                                    .getByBarcode(product.getProduct().getBarcode());
+                if(productsInDB.size() > 0) {
+                    for(AvailableProduct productInDB: productsInDB) {
+                        if(productInDB.getPrice() == product.getPrice()) {
+                            productInDB.setAmount(product.getAmount() + productInDB.getAmount());
+                            DAOFactory.getInstance().getAvailableProductDAO().update(productInDB, false);
+                            break;
+                        }
+                    }
+                } else {
+                    DAOFactory.getInstance().getAvailableProductDAO()
+                            .save(new AvailableProduct(product.getProduct(), product.getAmount(), product.getPrice()));
+                }
             }
             OrderFactory.getInstance().deleteAlProducts(username);
         }

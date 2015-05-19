@@ -22,7 +22,7 @@ public class AvailableProductDAO {
 
     public void delete(AvailableProduct product) {
         em.getTransaction().begin();
-        em.remove(product);
+        em.remove(em.contains(product) ? product : em.merge(product));
         em.getTransaction().commit();
     }
 
@@ -54,25 +54,41 @@ public class AvailableProductDAO {
                 .setParameter("category", temp).getResultList();
     }
 
-    public void update(AvailableProduct product) {
+    public void update(AvailableProduct product, boolean loadFromFile) {
         if(product.getAmount() == 0) {
             delete(product);
             return;
         }
-        double oldPrice = this.getByBarcode(product.getProduct().getBarcode()).get(0).getPrice();
-        if(oldPrice != product.getPrice()) {
+
+        List<AvailableProduct> products = this.getByBarcode(product.getProduct().getBarcode());
+        if(products.size() > 0 && loadFromFile) {
+            for(AvailableProduct productInDb: products) {
+                if(productInDb.getPrice() == product.getPrice()){
+                    productInDb.setAmount(productInDb.getAmount() + product.getAmount());
+                    em.getTransaction().begin();
+                    em.merge(productInDb);
+                    em.getTransaction().commit();
+                    return;
+                }
+            }
             this.save(product);
             return;
+        } else {
+            em.getTransaction().begin();
+            em.merge(product);
+            em.getTransaction().commit();
         }
-        em.getTransaction().begin();
-        em.merge(product);
-        em.getTransaction().commit();
     }
 
     public List<AvailableProduct> getAll() {
         TypedQuery<AvailableProduct> namedQuery = em.createNamedQuery("AvailableProduct.getAll", AvailableProduct.class);
-
-        return namedQuery.getResultList();
+        List<AvailableProduct> products = namedQuery.getResultList();
+        for(AvailableProduct product: products) {
+            if(product.getAmount() == 0){
+                this.delete(product);
+            }
+        }
+        return products;
     }
 
 }

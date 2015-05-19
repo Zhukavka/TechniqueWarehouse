@@ -26,9 +26,20 @@ public class RemoveFromOrderCommand implements ServletCommand {
         List<OrderedProduct> products = order.getProducts();
         OrderedProduct product = products.get(products.indexOf(new OrderedProduct().setId(productId)));
         int amount = product.getAmount();
-        AvailableProduct availableProduct = DAOFactory.getInstance().getAvailableProductDAO().getByBarcode(product.getProduct().getBarcode()).get(0);
-        availableProduct.setAmount(availableProduct.getAmount() + amount);
-        DAOFactory.getInstance().getAvailableProductDAO().update(availableProduct);
+        List<AvailableProduct> productsInDB = DAOFactory.getInstance().getAvailableProductDAO()
+                                                .getByBarcode(product.getProduct().getBarcode());
+        if(productsInDB.size() > 0) {
+            for(AvailableProduct productInDB: productsInDB) {
+                if(productInDB.getPrice() == product.getPrice()) {
+                    productInDB.setAmount(productInDB.getAmount() + amount);
+                    DAOFactory.getInstance().getAvailableProductDAO().update(productInDB, false);
+                    break;
+                }
+            }
+        } else {
+            DAOFactory.getInstance().getAvailableProductDAO()
+                    .save(new AvailableProduct(product.getProduct(), product.getAmount(), product.getPrice()));
+        }
 
         products.remove(new OrderedProduct().setId(productId));
         order = OrderFactory.getInstance().getOrder(username);

@@ -26,7 +26,7 @@ public class AddProductsCommand implements ServletCommand {
         final Part filePart = request.getPart("file");
 
         final String fileName = getFileName(filePart);
-        if(fileName != null && !fileName.isEmpty()){
+        if(fileName != null && !fileName.isEmpty()) {
             InputStream fileContent = null;
             JSONObject json = null;
             try {
@@ -45,19 +45,20 @@ public class AddProductsCommand implements ServletCommand {
                 }
             }
 
-            if(json == null || json.isEmpty())
-                return Page.HOME;
-            JSONArray products = (JSONArray) json.get("products");
-            for (Object aJson : products) {
-                JSONObject arrayObject = (JSONObject) aJson;
-                String barcode = (String) arrayObject.get("barcode");
-                double price = ((Number) arrayObject.get("price")).doubleValue();
-                int amount = ((Number) arrayObject.get("amount")).intValue();
+            if (json != null && !json.isEmpty()) {
+                JSONArray products = (JSONArray) json.get("products");
+                for (Object aJson : products) {
+                    JSONObject arrayObject = (JSONObject) aJson;
+                    String barcode = (String) arrayObject.get("barcode");
+                    double price = ((Number) arrayObject.get("price")).doubleValue();
+                    int amount = ((Number) arrayObject.get("amount")).intValue();
 
-                Product product = DAOFactory.getInstance().getProductDAO().getByBarcode(barcode);
-                if (product == null) continue;
+                    Product product = DAOFactory.getInstance().getProductDAO().getByBarcode(barcode);
+                    if (product == null) continue;
 
-                DAOFactory.getInstance().getAvailableProductDAO().update(new AvailableProduct(product, amount, price));
+                    DAOFactory.getInstance().getAvailableProductDAO().update(new AvailableProduct(product, amount, price),
+                                                                            true);
+                }
             }
         }
         List<AvailableProduct> products = DAOFactory.getInstance().getAvailableProductDAO().getAll();

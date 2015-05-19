@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,11 @@ public class ApplyOrderCommand implements ServletCommand {
         Client client = DAOFactory.getInstance().getClientDAO().get(clientId);
         Order order = OrderFactory.getInstance().getOrder((String) request.getAttribute("username"));
         if(order != null) {
-            List<OrderedProduct> orderedProducts =  order.getProducts();
+            List<OrderedProduct> orderedProducts =  new ArrayList<OrderedProduct>();
+            for(OrderedProduct product: order.getProducts()) {
+                orderedProducts.add(new OrderedProduct(product));
+            }
+            order.getProducts();
 
             double cost = 0;
             for(OrderedProduct product: orderedProducts) {
