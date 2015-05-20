@@ -19,10 +19,7 @@ public class FindProductCommand implements ServletCommand {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("Cp1251");
         String criteria = request.getParameter("criteria");
-        String someValue = new String(request.getParameter("findValue").getBytes("ISO-8859-1"), "Cp1251");
         String findValue = request.getParameter("findValue");
-        /*byte[] b = findValue.getBytes();
-        findValue = new String(b, "UTF-8");*/
         List<AvailableProduct> products = new ArrayList<AvailableProduct>();
         if(!findValue.isEmpty()) {
             if (criteria.equals("barcode")) {

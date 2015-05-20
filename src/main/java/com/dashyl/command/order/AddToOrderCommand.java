@@ -26,21 +26,24 @@ public class AddToOrderCommand implements ServletCommand {
                     OrderFactory.getInstance().addProductToOrder((String) request.getAttribute("username"), product, amount);
                     product.setAmount(product.getAmount() - amount);
                     DAOFactory.getInstance().getAvailableProductDAO().update(product, false);
+                    request.setAttribute("messageType", "success");
+                    request.setAttribute("message", "Товар добавлен к текущему заказу");
                 }
             } else {
-
+                request.setAttribute("messageType", "error");
+                request.setAttribute("message", "Товар не добавлен. Причина: неверный формат ввода кол-ва");
             }
         } catch(NumberFormatException ex) {
-
+            request.setAttribute("messageType", "error");
+            request.setAttribute("message", "Товар не добавлен. Причина: неверный формат ввода кол-ва");
         } catch(Exception ex) {
             ex.printStackTrace();
+            request.setAttribute("messageType", "error");
+            request.setAttribute("message", "Товар не добавлен. Причина: " + ex.getMessage());
         } finally {
             List<AvailableProduct> products =  DAOFactory.getInstance().getAvailableProductDAO().getAll();
             request.setAttribute("products", products);
             return Page.HOME;
         }
-
-
-
     }
 }

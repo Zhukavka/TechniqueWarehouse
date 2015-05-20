@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -33,9 +32,16 @@ public class OrdersBetweenDates implements ServletCommand {
             if(orders == null || orders.isEmpty())
                 orders = DAOFactory.getInstance().getOrderDAO().getAll();
             request.setAttribute("orders", orders);
-        } catch(ParseException ex) {
+            request.setAttribute("messageType", "info");
+            request.setAttribute("message", "Сортировка по периоду с " + format.format(from) + " до " + format.format(to) );
+        } catch(Exception ex) {
             ex.printStackTrace();
+            request.setAttribute("messageType", "error");
+            request.setAttribute("message", "Ошибка: " + ex.getMessage() );
         } finally {
+            List<Client> clients = DAOFactory.getInstance().getClientDAO().getAll();
+            request.setAttribute("clients", clients);
+
             return Page.ORDERS;
         }
     }

@@ -21,6 +21,6 @@
     </servlet-mapping>
     <filter-mapping>
         <filter-name>FormEncodingSetterFilter</filter-name>
-        <url-pattern>/warehouse/*</url-pattern>
+        <url-pattern>/warehouse</url-pattern>
     </filter-mapping>
 </web-app>

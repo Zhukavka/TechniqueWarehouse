@@ -1,7 +1,5 @@
 package com.dashyl.DAO;
 
-import com.dashyl.entity.AvailableProduct;
-import com.dashyl.entity.Order;
 import com.dashyl.entity.User;
 
 import javax.persistence.EntityManager;
@@ -22,13 +20,14 @@ public class UserDAO {
     }
 
     public User getByName(String username) {
-        return (User) em.createQuery("SELECT u FROM User u WHERE u.name = :username")
+        User user = (User) em.createQuery("SELECT u FROM User u WHERE u.name = :username")
                 .setParameter("username", username).getSingleResult();
+        return user;
     }
 
     public List<User> getAll() {
         TypedQuery<User> namedQuery = em.createNamedQuery("User.getAll", User.class);
-
-        return namedQuery.getResultList();
+        List<User> users =  namedQuery.getResultList();
+        return users;
     }
 }

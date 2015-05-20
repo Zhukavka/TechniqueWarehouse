@@ -31,14 +31,14 @@ public class AddProductsCommand implements ServletCommand {
             JSONObject json = null;
             try {
                 fileContent = filePart.getInputStream();
-                filePart.write("H:" + File.separator + fileName);
-                FileReader reader = new FileReader("H:" + File.separator + fileName);
+                filePart.write("C:" + File.separator + "warehouse" + File.separator + fileName);
+                FileReader reader = new FileReader("C:" + File.separator + "warehouse" + File.separator + fileName);
                 JSONParser jsonParser = new JSONParser();
                 json = (JSONObject) jsonParser.parse(reader);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (ParseException e) {
                 e.printStackTrace();
+                request.setAttribute("messageType", "error");
+                request.setAttribute("message", "Ошибка добавления товаров: " + e.getMessage());
             } finally {
                 if (fileContent != null) {
                     fileContent.close();
@@ -58,6 +58,8 @@ public class AddProductsCommand implements ServletCommand {
 
                     DAOFactory.getInstance().getAvailableProductDAO().update(new AvailableProduct(product, amount, price),
                                                                             true);
+                    request.setAttribute("messageType", "success");
+                    request.setAttribute("message", "Товары добавлены");
                 }
             }
         }

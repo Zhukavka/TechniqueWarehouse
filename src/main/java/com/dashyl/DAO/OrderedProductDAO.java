@@ -26,19 +26,21 @@ public class OrderedProductDAO {
     }
 
     public OrderedProduct get(int id) {
-        return em.find(OrderedProduct.class, id);
+        OrderedProduct product = em.find(OrderedProduct.class, id);
+        return product;
     }
 
     public void update(OrderedProduct product) {
         em.getTransaction().begin();
         em.merge(product);
         em.getTransaction().commit();
+
     }
 
     public List<OrderedProduct> getAll() {
         TypedQuery<OrderedProduct> namedQuery = em.createNamedQuery("OrderedProduct.getAll", OrderedProduct.class);
-
-        return namedQuery.getResultList();
+        List<OrderedProduct> products = namedQuery.getResultList();
+        return products;
     }
 
 }

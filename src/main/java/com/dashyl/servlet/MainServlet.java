@@ -22,7 +22,7 @@ import java.util.List;
  **/
 
 
-@MultipartConfig(location = "H:\\")//это потом в конфиг вынести
+@MultipartConfig(location = "C:\\warehouse")//это потом в конфиг вынести
 public class MainServlet extends HttpServlet {
 
     public MainServlet() {
@@ -91,7 +91,6 @@ public class MainServlet extends HttpServlet {
                 req.setAttribute("totalPrice", order.getCost());
         }
 
-        req.setCharacterEncoding("Cp1251");
         if(event == null){
             req.getRequestDispatcher("static/jsp/mainpage.jsp").forward(req, resp);
         } else if(event.equals("auth")) {

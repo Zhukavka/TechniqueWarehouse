@@ -33,17 +33,20 @@ public class OrderDAO {
     }
 
     public Order get(int id) {
-        return em.find(Order.class, id);
+        Order order = em.find(Order.class, id);
+        return order;
     }
 
     public List<Order> getOrdersBetweenDates(Date from, Date to) {
-        return (List<Order>) em.createQuery("SELECT o FROM Order o WHERE o.date >= :fromDate AND o.date <= :toDate")
+        List<Order> orders = (List<Order>) em.createQuery("SELECT o FROM Order o WHERE o.date >= :fromDate AND o.date <= :toDate")
                 .setParameter("fromDate", from).setParameter("toDate", to).getResultList();
+        return orders;
     }
 
     public List<Order> getOrdersByClient(Client client) {
-        return (List<Order>) em.createQuery("SELECT o FROM Order o WHERE o.client.id = :client_id")
+        List<Order> orders = (List<Order>) em.createQuery("SELECT o FROM Order o WHERE o.client.id = :client_id")
                 .setParameter("client_id", client.getId()).getResultList();
+        return orders;
     }
 
     public void update(Order order) {
@@ -54,7 +57,6 @@ public class OrderDAO {
 
     public List<Order> getAll() {
         TypedQuery<Order> namedQuery = em.createNamedQuery("Order.getAll", Order.class);
-
         return namedQuery.getResultList();
     }
 

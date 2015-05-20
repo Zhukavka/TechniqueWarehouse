@@ -742,124 +742,37 @@ header ul li a.active {
     background: url(static/images/hld.png) 0 0 repeat;
 }
 
-
-/* Services list */
-
-#content #services {
-    clear: both;
-    overflow: hidden;
-    padding-top: 15px;
-    font-size: 12px;
-}
-
-#content #services ul {
-    padding: 0;
-    margin: 0;
-}
-
-#content #services ul li {
-    width: 280px;
-    float: left;
-    padding: 0;
-    background: url(static/images/sev.gif) 0 33px repeat-x;
-}
-
-#content #services ul li.middle {
-    margin: 0 30px;
-}
-
-#content #services ul li h3 {
-    height: 24px;
-    line-height: 24px;
-    padding-left: 32px;
-    margin-bottom: 20px;
-}
-
-#content #services ul li.design h3 { padding-left: 28px; background: url(static/images/design.png) center left no-repeat; }
-#content #services ul li.build h3 { background: url(static/images/build.png) center left no-repeat; }
-#content #services ul li.manage h3 { background: url(static/images/manage.png) center left no-repeat; }
-
-
-/* Contact */
-
-#content .contact {
-    font-size: 14px;
-    line-height: 24px;
-}
-
-#content .contact .clear.sep {
-    height: 1px;
-    background: url(static/images/sev.gif) 0 0 repeat-x;
-}
-
-#content .contact .error {
-    font-weight: bold;
-    color: #ee0000;
-    background: url(static/images/cross.gif) 0 4px no-repeat;
-    padding-left: 20px;
-}
-
-#content .contact .success {
-    font-weight: bold;
-    color: #48940f;
-    background: url(static/images/tick.gif) 0 4px no-repeat;
-    padding-left: 20px;
-}
-
-
-/* Projects */
-
-#content .project_small {
-    width: 260px;
-    float: left;
-    background: url(static/images/hld.png) 0 0 repeat;
-    padding: 10px;
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-#content .project_small.middle { margin: 0 30px; }
-
-#content .project_small:hover { background: #000; }
-
-#content .project_small a { text-decoration: none; }
-
-#content .project_small h3 {
-    margin-bottom: 0;
-    font-size: 12px;
-    line-height: 16px;
-    color: #ccc;
-    font-weight: bold;
-}
-
-#content .project_small img {
-    margin-bottom: 10px;
-}
-
 /*MESSAGES*/
 .info, .success, .warning, .error, .validation {
     border: 1px solid;
-    margin: 10px 0;
+    margin: 10px 0px;
     padding:15px 10px 15px 50px;
-    background: no-repeat 10px center;
+    font-size: 18px;
+    background-repeat: no-repeat;
+    background-position: 10px center;
 }
 .info {
     color: #00529B;
-    background: #BDE5F8 url('info.png');
+    background-color: #BDE5F8;
+    background-image: url(static/images/info.png);
 }
 .success {
     color: #4F8A10;
-    background: #DFF2BF url('success.png');
+    background-color: #DFF2BF;
+    background-image:url(static/images/success.png);
 }
 .warning {
     color: #9F6000;
-    background: #FEEFB3 url('warning.png');
+    background-color: #FEEFB3;
+    background-image: url(static/images/warning.png);
 }
 .error {
     color: #D8000C;
-    background: #FFBABA url('error.png');
+    background-color: #FFBABA;
+    background-image: url(static/images/error.png);
 }
 .validation {
     color: #D63301;
-    background: #FFCCBA url('validation.png');
+    background-color: #FFCCBA;
+    background-image: url(static/images/validation.png);
 }

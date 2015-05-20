@@ -40,49 +40,57 @@
                             </label>
                         </c:if>
                     </h2>
-                    <div class="CSSTableGenerator" >
-                        <table>
-                            <tr>
-                                <td scope="col">Штрих-код товара</td>
-                                <td scope="col">Наименование</td>
-                                <td scope="col">Количество</td>
-                                <td scope="col">Сумма</td>
-                                <td scope="col">Удалить</td>
-                            </tr>
-
-                            <c:if test="${order != null}">
-                                <c:forEach var="product" items="${order.products}">
+                    <c:if test="${message != null}">
+                        <c:if test="${messageType != null}">
+                            <div class="${messageType}">${message}</div>
+                        </c:if>
+                    </c:if>
+                    <c:choose>
+                        <c:when test="${order != null}">
+                            <div class="CSSTableGenerator" >
+                                <table>
                                     <tr>
-                                        <td><c:out value="${product.product.barcode}"/></td>
-                                        <td><c:out value="${product.product.name}"/></td>
-                                        <td><c:out value="${product.amount}"/></td>
-                                        <td><c:out value="${String.format('%.0f',product.price)}"/></td>
-                                        <td>
-                                            <form method="post" action="warehouse?event=removeFromOrder&id=${product.id}">
-                                                <input type="submit" value="Убрать из заказа">
-                                            </form>
-                                        </td>
+                                        <td scope="col">Штрих-код товара</td>
+                                        <td scope="col">Наименование</td>
+                                        <td scope="col">Количество</td>
+                                        <td scope="col">Сумма</td>
+                                        <td scope="col">Удалить</td>
                                     </tr>
-                                </c:forEach>
-                            </c:if>
-
-                        </table>
-                    </div>
-
+                                    <c:forEach var="product" items="${order.products}">
+                                        <tr>
+                                            <td><c:out value="${product.product.barcode}"/></td>
+                                            <td><c:out value="${product.product.name}"/></td>
+                                            <td><c:out value="${product.amount}"/></td>
+                                            <td><c:out value="${String.format('%.0f',product.price)}"/></td>
+                                            <td>
+                                                <form method="post" action="warehouse?event=removeFromOrder&id=${product.id}">
+                                                    <input type="submit" value="Убрать из заказа">
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
+                            </div>
+                            <form method="post" action="warehouse?event=cancelOrder">
+                                <input type="submit" value="Отменить заказ">
+                            </form>
+                            <form method="post" action="warehouse?event=applyOrder">
+                                <select size="1" name="criteria">
+                                    <c:if test="${ not empty clients}">
+                                        <c:forEach var="client" items="${clients}">
+                                            <option value="${client.id}"><c:out value="${client.name}"/></option>
+                                        </c:forEach>
+                                    </c:if>
+                                </select>
+                                <input type="submit" value="Оформить заказ">
+                            </form>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="info">Текущий заказ пуст</div>
+                        </c:otherwise>
+                    </c:choose>
                     <p>
-                    <form method="post" action="warehouse?event=cancelOrder">
-                        <input type="submit" value="Отменить заказ">
-                    </form>
-                    <form method="post" action="warehouse?event=applyOrder">
-                        <select size="1" name="criteria">
-                            <c:if test="${ not empty clients}">
-                                <c:forEach var="client" items="${clients}">
-                                    <option value="${client.id}"><c:out value="${client.name}"/></option>
-                                </c:forEach>
-                            </c:if>
-                        </select>
-                        <input type="submit" value="Оформить заказ">
-                    </form>
+
                 </div>
             </div>
         </div>

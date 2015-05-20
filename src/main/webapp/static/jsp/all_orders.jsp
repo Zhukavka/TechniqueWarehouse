@@ -28,6 +28,11 @@
                         </script>
                     </c:if>
                     <h2>Заказы</h2>
+                    <c:if test="${message != null}">
+                        <c:if test="${messageType != null}">
+                            <div class="${messageType}">${message}</div>
+                        </c:if>
+                    </c:if>
                     <form method="post" action="warehouse?event=ordersBetweenDates">
                         Вывод статистики: за период от
                         <label>
@@ -47,37 +52,37 @@
                         </label>
                         <input type="submit" value="Показать">
                     </form>
-                    <div class="CSSTableGenerator" >
-                        <table>
-
-                            <tr>
-                                <td scope="col">Клиент</td>
-                                <td scope="col">Дата Заказа</td>
-                                <td scope="col">Сумма</td>
-                                <td scope="col">Оформил заказ</td>
-                                <td scope="col">Сохранить отчет</td>
-                            </tr>
-
-                            <c:if test="${not empty orders}">
-                                <c:forEach var="order" items="${orders}">
+                    <c:choose>
+                        <c:when test="${not empty orders}">
+                            <div class="CSSTableGenerator" >
+                                <table>
                                     <tr>
-                                        <td><c:out value="${order.client.name}"/></td>
-                                        <td><fmt:formatDate pattern="dd/MM/yyyy" value="${order.date}"/></td>
-                                        <td><c:out value="${String.format('%.0f',order.cost)}"/></td>
-                                        <td><c:out value="${order.user.name}"/></td>
-                                        <td>
-                                            <form method="post" action="warehouse?event=saveReport&id=${order.id}">
-                                                <input type="submit" value="Сохранить отчёт">
-                                            </form>
-                                        </td>
+                                        <td scope="col">Клиент</td>
+                                        <td scope="col">Дата Заказа</td>
+                                        <td scope="col">Сумма</td>
+                                        <td scope="col">Оформил заказ</td>
+                                        <td scope="col">Сохранить отчет</td>
                                     </tr>
-                                </c:forEach>
-                            </c:if>
-
-                        </table>
-                    </div>
-                    <hr>
-
+                                    <c:forEach var="order" items="${orders}">
+                                        <tr>
+                                            <td><c:out value="${order.client.name}"/></td>
+                                            <td><fmt:formatDate pattern="dd/MM/yyyy" value="${order.date}"/></td>
+                                            <td><c:out value="${String.format('%.0f',order.cost)}"/></td>
+                                            <td><c:out value="${order.user.name}"/></td>
+                                            <td>
+                                                <form method="post" action="warehouse?event=saveReport&id=${order.id}">
+                                                    <input type="submit" value="Сохранить отчёт">
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="info">Ещё не было заказов</div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </div>

@@ -18,11 +18,14 @@ public class AddClientCommand implements ServletCommand {
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
 
-        /*Потом написать проверки правильности ввода*/
+        /*РџРѕС‚РѕРј РЅР°РїРёСЃР°С‚СЊ РїСЂРѕРІРµСЂРєРё РїСЂР°РІРёР»СЊРЅРѕСЃС‚Рё РІРІРѕРґР°*/
         try {
             DAOFactory.getInstance().getClientDAO().save(new Client(name, email, phone));
+            request.setAttribute("messageType", "success");
+            request.setAttribute("message", "РљР»РёРµРЅС‚ РґРѕР±Р°РІР»РµРЅ");
         }catch (org.hibernate.exception.ConstraintViolationException ex) {
-            request.setAttribute("error", "Повторяющееся значение");
+            request.setAttribute("messageType", "error");
+            request.setAttribute("message", "Р—Р°РїРёСЃСЊ Рѕ РєР»РёРµРЅС‚Рµ СЃ РґР°РЅРЅС‹Рј email СЃСѓС‰РµСЃС‚РІСѓРµС‚ РІ Р‘Р”");
         } finally {
             List<Client> clients = DAOFactory.getInstance().getClientDAO().getAll();
             request.setAttribute("clients", clients);

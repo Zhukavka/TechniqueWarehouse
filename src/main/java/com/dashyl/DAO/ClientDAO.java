@@ -26,19 +26,21 @@ public class ClientDAO {
     }
 
     public Client get(int id) {
-        return em.find(Client.class, id);
+        Client client = em.find(Client.class, id);
+        return client;
     }
 
     public void update(Client client) {
         em.getTransaction().begin();
         em.merge(client);
         em.getTransaction().commit();
+
     }
 
     public List<Client> getAll() {
         TypedQuery<Client> namedQuery = em.createNamedQuery("Client.getAll", Client.class);
-
-        return namedQuery.getResultList();
+        List<Client> clients = namedQuery.getResultList();
+        return clients;
     }
 
 }

@@ -18,12 +18,13 @@ public class CategoryDAO {
     }
 
     public Category get(int id) {
-        return em.find(Category.class, id);
+        Category category = em.find(Category.class, id);
+        return category;
     }
 
     public List<Category> getAll() {
         TypedQuery<Category> namedQuery = em.createNamedQuery("Category.getAll", Category.class);
-
-        return namedQuery.getResultList();
+        List<Category> categories = namedQuery.getResultList();
+        return categories;
     }
 }

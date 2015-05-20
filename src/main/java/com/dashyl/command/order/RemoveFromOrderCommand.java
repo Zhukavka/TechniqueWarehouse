@@ -44,6 +44,8 @@ public class RemoveFromOrderCommand implements ServletCommand {
         products.remove(new OrderedProduct().setId(productId));
         order = OrderFactory.getInstance().getOrder(username);
         request.setAttribute("order", order);
+        request.setAttribute("messageType", "success");
+        request.setAttribute("message", "Товар убран из заказа");
         return Page.ORDER;
     }
 }

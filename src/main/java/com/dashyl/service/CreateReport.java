@@ -17,7 +17,7 @@ public class CreateReport {
     private static ObjectFactory factory = null;
     private static WordprocessingMLPackage wordMLPackage = null;
 
-    public static void generateReport(Order order) throws InvalidFormatException{
+    public static void generateReport(Order order) throws Docx4JException {
         try {
             wordMLPackage = WordprocessingMLPackage.createPackage();
             factory = Context.getWmlObjectFactory();
@@ -32,10 +32,10 @@ public class CreateReport {
                 wordMLPackage.save(new java.io.File("c:\\warehouse\\reports" + "\\"
                         + order.getClient().getName() + df.format(order.getDate())  + ".docx"));
             } catch (Docx4JException e) {
-                e.printStackTrace();
+                throw e;
             }
         } catch (InvalidFormatException e) {
-            e.printStackTrace();
+            throw e;
         }
     }
 
@@ -75,6 +75,12 @@ public class CreateReport {
             addTableCell(tableRow, String.valueOf( ordProd.getPrice() ));
             table.getContent().add(tableRow);
         }
+        tableRow = factory.createTr();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        addTableCell(tableRow, "Оформлен на " + order.getClient().getName() );
+        addTableCell(tableRow, "Оформил заказ " + order.getUser().getName());
+        addTableCell(tableRow, "Дата оформления " + df.format(order.getDate()) );
+        table.getContent().add(tableRow);
         return table;
     }
 

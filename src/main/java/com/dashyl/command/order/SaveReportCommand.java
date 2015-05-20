@@ -6,7 +6,6 @@ import com.dashyl.entity.Order;
 import com.dashyl.service.CreateReport;
 import com.dashyl.servlet.manager.Page;
 import com.dashyl.util.DAOFactory;
-import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,8 +22,11 @@ public class SaveReportCommand implements ServletCommand {
         Order order = DAOFactory.getInstance().getOrderDAO().get(orderId);
         try {
             CreateReport.generateReport(order);
-        } catch (InvalidFormatException e) {
-            e.printStackTrace();
+            request.setAttribute("messageType", "success");
+            request.setAttribute("message", "Отчёт сохранён");
+        } catch (Exception e) {
+            request.setAttribute("messageType", "error");
+            request.setAttribute("message", "Ошибка сохранения отчёта: " + e.getMessage());
         }
         List<AvailableProduct> products =  DAOFactory.getInstance().getAvailableProductDAO().getAll();
         request.setAttribute("products", products);

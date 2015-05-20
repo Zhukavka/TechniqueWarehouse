@@ -27,11 +27,14 @@ public class ProductDAO {
     }
 
     public Product get(int id) {
-        return em.find(Product.class, id);
+        Product product = em.find(Product.class, id);
+        return product;
     }
 
     public Product getByBarcode(String barcode) {
-        return em.createNamedQuery("Product.getByBarcode", Product.class).setParameter("barcode", barcode).getSingleResult();
+        Product product = em.createNamedQuery("Product.getByBarcode", Product.class)
+                .setParameter("barcode", barcode).getSingleResult();
+        return product;
     }
 
     public void update(Product product) {
@@ -42,8 +45,8 @@ public class ProductDAO {
 
     public List<Product> getAll() {
         TypedQuery<Product> namedQuery = em.createNamedQuery("Product.getAll", Product.class);
-
-        return namedQuery.getResultList();
+        List<Product> products = namedQuery.getResultList();
+        return products;
     }
 
 }

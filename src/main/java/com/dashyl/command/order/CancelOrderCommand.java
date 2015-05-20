@@ -44,6 +44,8 @@ public class CancelOrderCommand implements ServletCommand {
         request.setAttribute("order", order);
         List<AvailableProduct> products =  DAOFactory.getInstance().getAvailableProductDAO().getAll();
         request.setAttribute("products", products);
+        request.setAttribute("messageType", "success");
+        request.setAttribute("message", "Заказ отменен");
         return Page.HOME;
     }
 }

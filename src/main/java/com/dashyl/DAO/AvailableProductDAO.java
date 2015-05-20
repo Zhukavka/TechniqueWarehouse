@@ -45,7 +45,7 @@ public class AvailableProductDAO {
         String temp = "%" + barcode + "%";
         Query query = em.createQuery("SELECT c FROM AvailableProduct c WHERE c.product.barcode LIKE :barcode")
                 .setParameter("barcode", temp);
-        return (List<AvailableProduct>) query.getResultList();
+        return query.getResultList();
     }
 
     public List getByCategory(String category) {
@@ -72,7 +72,6 @@ public class AvailableProductDAO {
                 }
             }
             this.save(product);
-            return;
         } else {
             em.getTransaction().begin();
             em.merge(product);

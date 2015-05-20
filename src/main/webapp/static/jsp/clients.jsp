@@ -29,30 +29,30 @@
                     </c:if>
                     <c:set var="clients" value="${clients}"/>
                     <p> <h2>Клиенты<input style="float: right" type="button" value="Добавить нового клиента" onclick="newClient()"></h2></p>
-                    <div class="CSSTableGenerator" >
-                        <table >
-
-                            <tr>
-                                <td scope="col">Имя</td>
-                                <td scope="col">E-mail</td>
-                                <td scope="col">Телефон</td>
-                            </tr>
-
-                            <c:if test="${not empty clients}">
-                                <c:forEach var="client" items="${clients}">
-
+                    <c:choose>
+                        <c:when test="${not empty clients}">
+                            <div class="CSSTableGenerator" >
+                                <table >
                                     <tr>
-                                        <td><c:out value="${client.name}"/></td>
-                                        <td><c:out value="${client.email}"/></td>
-                                        <td><c:out value="${client.phoneNumber}"/></td>
+                                        <td scope="col">Имя</td>
+                                        <td scope="col">E-mail</td>
+                                        <td scope="col">Телефон</td>
                                     </tr>
+                                    <c:forEach var="client" items="${clients}">
+                                        <tr>
+                                            <td><c:out value="${client.name}"/></td>
+                                            <td><c:out value="${client.email}"/></td>
+                                            <td><c:out value="${client.phoneNumber}"/></td>
+                                        </tr>
 
-                                </c:forEach>
-                            </c:if>
-
-                        </table>
-                    </div>
-
+                                    </c:forEach>
+                                </table>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="info">В БД нет клиентов</div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </div>

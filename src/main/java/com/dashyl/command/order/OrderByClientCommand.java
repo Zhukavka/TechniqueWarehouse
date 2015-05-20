@@ -1,8 +1,8 @@
 package com.dashyl.command.order;
 
-import com.dashyl.OrderFactory;
 import com.dashyl.command.ServletCommand;
-import com.dashyl.entity.*;
+import com.dashyl.entity.Client;
+import com.dashyl.entity.Order;
 import com.dashyl.servlet.manager.Page;
 import com.dashyl.util.DAOFactory;
 
@@ -10,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +29,8 @@ public class OrderByClientCommand implements ServletCommand {
         request.setAttribute("orders", orders);
         List<Client> clients = DAOFactory.getInstance().getClientDAO().getAll();
         request.setAttribute("clients", clients);
+        request.setAttribute("messageType", "info");
+        request.setAttribute("message", "Сортировка по клиенту " + client.getName() );
         return Page.ORDERS;
     }
 }

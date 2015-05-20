@@ -21,7 +21,8 @@ public class ApplyOrderCommand implements ServletCommand {
         int clientId = Integer.valueOf(request.getParameter("criteria"));
 
         Client client = DAOFactory.getInstance().getClientDAO().get(clientId);
-        Order order = OrderFactory.getInstance().getOrder((String) request.getAttribute("username"));
+        String username = (String) request.getAttribute("username");
+        Order order = OrderFactory.getInstance().getOrder(username);
         if(order != null) {
             List<OrderedProduct> orderedProducts =  new ArrayList<OrderedProduct>();
             for(OrderedProduct product: order.getProducts()) {
@@ -33,10 +34,12 @@ public class ApplyOrderCommand implements ServletCommand {
             for(OrderedProduct product: orderedProducts) {
                 cost += product.getAmount() * product.getPrice();
             }
-            User user = DAOFactory.getInstance().getUserDAO().getByName((String) request.getAttribute("username"));
+            User user = DAOFactory.getInstance().getUserDAO().getByName(username);
             DAOFactory.getInstance().getOrderDAO().save(new Order(cost, client, user, orderedProducts));
-            OrderFactory.getInstance().deleteAlProducts((String) request.getAttribute("username"));
+            OrderFactory.getInstance().deleteAlProducts(username);
         }
+        request.setAttribute("messageType", "success");
+        request.setAttribute("message", "Заказ оформлен на клиента " + client.getName() + " пользователем " + username);
         List<AvailableProduct> products =  DAOFactory.getInstance().getAvailableProductDAO().getAll();
         request.setAttribute("products", products);
         return Page.HOME;

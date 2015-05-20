@@ -51,7 +51,10 @@
                                             Телефон
                                             <span class="req">*</span>
                                         </label>
-                                        <input maxlength="32" required autocomplete="off" name="phone" type="text">
+                                        <input maxlength="32" required autocomplete="off"
+                                               pattern="^[1-9]{7,15}"
+                                               title="Допустимы только цифры. Минимальная длина - 7, максимальная - 15."
+                                               name="phone" type="text">
                                     </div>
                                     <button type="submit" class="button button-block">Добавить</button>
                                 </form>
